@@ -1,0 +1,39 @@
+{
+  "name": "ctxray",
+  "version": "0.1.0",
+  "description": "Context forensics for AI coding agents — see which of your rules got evicted from the context window, and what the agent did next.",
+  "type": "module",
+  "bin": {
+    "ctxray": "dist/ctxray.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "prepublishOnly": "node scripts/build.mjs"
+  },
+  "keywords": [
+    "claude-code",
+    "codex",
+    "dsh",
+    "ai-agent",
+    "context-window",
+    "observability",
+    "forensics",
+    "cli"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "fzstd": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.6.0"
+  }
+}
