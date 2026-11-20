@@ -1,6 +1,6 @@
 {
   "name": "ctxray",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Context forensics for AI coding agents — see which of your rules got evicted from the context window, and what the agent did next.",
   "type": "module",
   "bin": {

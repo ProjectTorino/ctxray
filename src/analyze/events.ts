@@ -1,6 +1,7 @@
 import type { Trace } from '../types.ts';
 import type { Finding } from './types.ts';
 import { contentHash, estimateTokens } from '../util/tokens.ts';
+import { t } from '../i18n.ts';
 
 const OVERSIZE_TOKENS = 4000;
 const OVERSIZE_FRACTION = 0.25; // >25% of the declared context window
@@ -83,8 +84,8 @@ export function analyzeEvents(trace: Trace): Finding[] {
       kind: 'duplicate-read',
       turn: calls[calls.length - 1].turn,
       severity: wasted > OVERSIZE_TOKENS ? 'warn' : 'info',
-      title: `同一内容被读取 ${calls.length} 次`,
-      detail: `相同的内容被拉取 ${calls.length} 次，浪费约 ${wasted} tokens。`,
+      title: t().dupContentTitle(calls.length),
+      detail: t().dupContentDetail(calls.length, wasted),
       evidence: calls.map((c) => ({
         kind: 'tool-call' as const,
         turn: c.turn,
@@ -102,8 +103,8 @@ export function analyzeEvents(trace: Trace): Finding[] {
       kind: 'duplicate-read',
       turn: calls[calls.length - 1].turn,
       severity: wasted > OVERSIZE_TOKENS ? 'warn' : 'info',
-      title: `文件被重复读取 ${calls.length} 次`,
-      detail: `路径 ${truncate(path, 80)} 被读取 ${calls.length} 次，浪费约 ${wasted} tokens。`,
+      title: t().dupPathTitle(calls.length),
+      detail: t().dupPathDetail(truncate(path, 80), calls.length, wasted),
       evidence: calls.map((c) => ({
         kind: 'tool-call' as const,
         turn: c.turn,
@@ -123,8 +124,8 @@ export function analyzeEvents(trace: Trace): Finding[] {
         kind: 'oversized-output',
         turn: c.turn,
         severity: frac >= OVERSIZE_FRACTION ? 'critical' : 'warn',
-        title: `工具输出过大（约 ${tok} tokens）`,
-        detail: `工具 ${c.name} 的输出约占 ${Math.round(frac * 100)}% 的上下文窗口，是上下文膨胀的候选元凶。`,
+        title: t().oversizedTitle(tok),
+        detail: t().oversizedDetail(c.name, Math.round(frac * 100)),
         evidence: [
           { kind: 'tool-call', turn: c.turn, ref: `tool ${c.name} @ turn ${c.turn}`, excerpt: truncate(c.arguments, 120) },
         ],

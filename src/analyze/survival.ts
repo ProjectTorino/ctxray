@@ -1,6 +1,7 @@
 import type { Trace } from '../types.ts';
 import type { Finding, Rule, RuleSurvival } from './types.ts';
 import type { ExtractedRule } from './rules.ts';
+import { t } from '../i18n.ts';
 
 const STOP_EN = new Set([
   'the', 'a', 'an', 'and', 'or', 'but', 'not', 'for', 'with', 'without', 'from', 'into', 'onto',
@@ -97,8 +98,8 @@ function linkViolations(trace: Trace, rule: Rule, kw: string[], evictedAt: numbe
       kind: 'violation',
       turn: c.turn,
       severity: 'warn',
-      title: `规则被挤出后，agent 在第 ${c.turn} 轮执行了相关操作`,
-      detail: `该操作引用了被挤出规则的主题（${hits.slice(0, 5).join(', ')}）。请人工确认是否违反了规则。`,
+      title: t().violationTitle(c.turn),
+      detail: t().violationDetail(hits.slice(0, 5).join(', ')),
       evidence: [
         { kind: 'rule', ref: 'user instruction', excerpt: rule.text.slice(0, 140) },
         { kind: 'tool-call', turn: c.turn, ref: `tool ${c.name} @ turn ${c.turn}`, excerpt: c.arguments.slice(0, 160) },

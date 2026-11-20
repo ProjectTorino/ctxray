@@ -14,7 +14,7 @@ const USER_META =
   /<system-reminder>|<\/?goal_round\b|<acp\b|\[model changed|\[Compressed conversation section\]|Time sampled while preparing|The user changed the approval policy|TASK AS OF THIS BLOCK|Open objectives:|Fingerprints show|No compressible ranges|^Objective:\s|^Round:\s+\d+\/\d+|^Continue working toward/;
 
 const ACK =
-  /^(?:ok|okay|yes|no|thanks|thank you|acknowledged|got it|sure|fine|好|好的|嗯|行|可以|继续|收到|明白|谢谢|知道了|了解|哦|对|是|嗯嗯)[.!！。～~]*$/i;
+  /^(?:ok|okay|yes|no|thanks|thank you|acknowledged|got it|sure|fine|continue|proceed|go on|go ahead|next|looks good|lgtm|好|好的|嗯|行|可以|继续|收到|明白|谢谢|知道了|了解|哦|对|是|嗯嗯)[.!！。～~]*$/i;
 
 function hash(text: string): string {
   return createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 12);

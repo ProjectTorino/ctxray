@@ -19,29 +19,29 @@ ctxray — Context Forensics
   codex · gpt-5-codex · 2 turns · 2 tool calls
   context window 200.0K
 
-  2 条指令被挤出了上下文窗口
+  2 instructions fell out of the context window
 
-上下文占用（每轮）
+Context usage (per turn)
   turn  1  ████████████████████████████████████████     50.0K
-  turn  2  ██████      8.0K ◄ 压缩点
+  turn  2  ██████      8.0K ◄ compacted
 
-发现 4 个问题
-  1. [WARN] 上下文在第 2 轮疑似被压缩
-     输入 token 从 50000 骤降到 8000（下降 84%）。
-  2. [WARN] 规则在第 2 轮之后被挤出上下文
-     帮我实现支付模块。
-  3. [WARN] 规则在第 2 轮之后被挤出上下文
-     不要修改 migrations 目录。
-  4. [WARN] 规则被挤出后，agent 在第 2 轮执行了相关操作
-     该操作引用了被挤出规则的主题（migrations）。请人工确认是否违反了规则。
+4 issues
+  1. [WARN] Context likely compacted at turn 2
+     Input tokens dropped from 50000 to 8000 (-84%).
+  2. [WARN] Rule dropped from context after turn 2
+     Implement the payment module.
+  3. [WARN] Rule dropped from context after turn 2
+     Do not modify the migrations directory.
+  4. [WARN] Agent acted on an evicted rule at turn 2
+     The action references topics from an evicted rule (migrations). Check whether it violated the rule.
      · turn 2 tool bash @ turn 2: edit migrations/001_init.sql
 
-指令存亡（4 条：2 存活 / 2 被挤出）
-  1. [user] ✗ 第 2 轮被挤出  帮我实现支付模块。
-  2. [user] ✗ 第 2 轮被挤出  不要修改 migrations 目录。
-     ↳ 规则被挤出后，agent 在第 2 轮执行了相关操作
-  3. [sys ] ✓ 存活  Always use TypeScript for new code.
-  4. [sys ] ✓ 存活  Never commit secrets or API keys.
+Rule survival (4 rules: 2 alive / 2 evicted)
+  1. [user] ✗ evicted at turn 2  Implement the payment module.
+  2. [user] ✗ evicted at turn 2  Do not modify the migrations directory.
+     ↳ Agent acted on an evicted rule at turn 2
+  3. [sys ] ✓ alive  Always use TypeScript for new code.
+  4. [sys ] ✓ alive  Never commit secrets or API keys.
 ```
 
 > That's the whole product in one screenshot: a rule was evicted by compaction,
@@ -109,6 +109,7 @@ ctxray <session-file> --html [--out f] single-file HTML report
 ctxray <session-file> --budget <tokens>
                                        CI gate: fail if peak context > budget
                                        or any critical finding (exit 1)
+ctxray <session-file> --lang zh        Chinese output (default is English)
 ```
 
 ### CI gate

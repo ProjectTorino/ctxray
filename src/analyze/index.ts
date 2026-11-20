@@ -4,6 +4,7 @@ import { extractAllRules } from './rules.ts';
 import { allTurns, buildContext } from './window.ts';
 import { analyzeEvents } from './events.ts';
 import { analyzeSurvival } from './survival.ts';
+import { t } from '../i18n.ts';
 
 const SEV = { info: 0, warn: 1, critical: 2 } as const;
 
@@ -20,7 +21,7 @@ export function analyze(trace: Trace): Report {
       kind: 'rule-evicted',
       turn: s.evictedAt,
       severity: 'warn',
-      title: `规则在第 ${s.evictedAt} 轮之后被挤出上下文`,
+      title: t().ruleEvictedTitle(s.evictedAt),
       detail: s.rule.text,
       evidence: [
         {

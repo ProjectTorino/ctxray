@@ -27,18 +27,18 @@ ctxray — Context Forensics
   dsh · deepseek-v4-pro · 3 turns · 180 tool calls
   context window 1.05M
 
-  11 个问题需要关注
+  11 issues worth investigating
 
-上下文占用（每轮）
-  turn  1  ███████████                         83.7K (估算)
-  turn  2  ██████████████████████████████████  270.4K (估算)
-  turn  3  ██████████████████████████████████  315.1K (估算)
+Context usage (per turn)
+  turn  1  ███████████                         83.7K (est.)
+  turn  2  ██████████████████████████████████  270.4K (est.)
+  turn  3  ██████████████████████████████████  315.1K (est.)
 
-指令存亡（14 条：14 存活 / 0 被挤出）
-  13. [user] ✓ 存活  帮我构思一个开源项目，…
-  14. [user] ✓ 存活  开始做，不要问我任何问题，所有决定权在你
+Rule survival (14 rules: 14 alive / 0 evicted)
+  13. [user] ✓ alive  帮我构思一个开源项目，…
+  14. [user] ✓ alive  开始做，不要问我任何问题，所有决定权在你
 
-  注：token 数为估算值（该来源无逐轮 token 记录）。
+  Note: token counts are estimates (this source has no per-turn token records).
 ```
 
 ## The three findings that matter

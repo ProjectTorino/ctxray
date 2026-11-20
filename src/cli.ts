@@ -2,6 +2,7 @@ import { parseFile, analyze } from './index.ts';
 import { demoReport } from './demo.ts';
 import { renderTerminal } from './render/terminal.ts';
 import { renderHtml } from './render/html.ts';
+import { setLang, type Lang } from './i18n.ts';
 
 const USAGE = `ctxray — context forensics for AI coding agents
 
@@ -14,6 +15,7 @@ usage:
                                           or any critical finding (exit 1)
 
 flags:
+  --lang en|zh        output language (default: en, or $CTXRAY_LANG)
   --no-color          disable ANSI colors in the terminal report
   -h, --help          show this help
   -v, --version       print version
@@ -29,6 +31,7 @@ interface Opts {
   html: boolean;
   out?: string;
   budget?: number;
+  lang?: Lang;
   color: boolean;
   help: boolean;
   version: boolean;
@@ -44,6 +47,7 @@ function parseArgs(argv: string[]): Opts {
     else if (a === '--no-color') o.color = false;
     else if (a === '--out') o.out = argv[++i];
     else if (a === '--budget') o.budget = Number(argv[++i]);
+    else if (a === '--lang') o.lang = argv[++i] === 'zh' ? 'zh' : 'en';
     else if (a === '-h' || a === '--help') o.help = true;
     else if (a === '-v' || a === '--version') o.version = true;
     else if (!a.startsWith('-') && !o.path) o.path = a;
@@ -53,13 +57,14 @@ function parseArgs(argv: string[]): Opts {
 
 async function main(): Promise<void> {
   const o = parseArgs(process.argv.slice(2));
+  setLang(o.lang ?? (process.env.CTXRAY_LANG === 'zh' ? 'zh' : 'en'));
 
   if (o.help) {
     process.stdout.write(USAGE);
     return;
   }
   if (o.version) {
-    process.stdout.write('ctxray 0.1.0\n');
+    process.stdout.write('ctxray 0.2.0\n');
     return;
   }
   if (!o.path && !o.demo) {

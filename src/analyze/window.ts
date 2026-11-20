@@ -1,6 +1,7 @@
 import type { Trace } from '../types.ts';
 import type { ContextPoint, Finding } from './types.ts';
 import { estimateTokens } from '../util/tokens.ts';
+import { t } from '../i18n.ts';
 
 export interface WindowResult {
   context: ContextPoint[];
@@ -21,8 +22,8 @@ export function buildContext(trace: Trace): WindowResult {
       kind: 'compaction',
       turn: c.turn,
       severity: 'info',
-      title: `上下文在第 ${c.turn} 轮被压缩（显式）`,
-      detail: '检测到显式压缩事件：' + truncate(c.summary, 240),
+      title: t().compactionExplicitTitle(c.turn),
+      detail: t().compactionExplicitDetail(truncate(c.summary, 240)),
       evidence: [
         { kind: 'message', turn: c.turn, ref: `compaction @ turn ${c.turn}`, excerpt: truncate(c.summary, 160) },
       ],
@@ -58,8 +59,8 @@ export function buildContext(trace: Trace): WindowResult {
           kind: 'compaction',
           turn: cur.turn,
           severity: 'warn',
-          title: `上下文在第 ${cur.turn} 轮疑似被压缩`,
-          detail: `输入 token 从 ${prev.inputTokens} 骤降到 ${cur.inputTokens}（下降 ${pct}%）。`,
+          title: t().compactionLikelyTitle(cur.turn),
+          detail: t().compactionLikelyDetail(prev.inputTokens, cur.inputTokens, pct),
           evidence: [
             { kind: 'token-usage', turn: cur.turn, ref: `turn ${prev.turn}→${cur.turn}`, excerpt: `${prev.inputTokens} → ${cur.inputTokens} tokens` },
           ],

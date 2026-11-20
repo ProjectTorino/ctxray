@@ -1,4 +1,5 @@
 import type { Finding, Report, RuleSurvival } from '../analyze/types.ts';
+import { getLang, t } from '../i18n.ts';
 
 function esc(s: string): string {
   return s
@@ -65,8 +66,8 @@ function ruleRow(s: RuleSurvival): string {
   const tag = s.source === 'user' ? 'user' : 'sys';
   const evicted = s.evictedAt != null;
   const status = evicted
-    ? `<span class="status evicted">✗ 第 ${s.evictedAt} 轮被挤出</span>`
-    : `<span class="status live">✓ 存活</span>`;
+    ? `<span class="status evicted">${esc(t().evictedStatus(s.evictedAt!))}</span>`
+    : `<span class="status live">${esc(t().liveStatus())}</span>`;
   const violations = s.violations
     .map((v) => `<div class="violation">↳ ${esc(v.title)}</div>`)
     .join('');
@@ -89,7 +90,7 @@ export function renderHtml(r: Report): string {
   const pct = r.contextWindow && total != null ? Math.round((total / r.contextWindow) * 100) : null;
 
   return `<!doctype html>
-<html lang="zh-CN">
+<html lang="${getLang() === 'zh' ? 'zh-CN' : 'en'}">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -130,17 +131,17 @@ export function renderHtml(r: Report): string {
 <div class="wrap">
   <h1>ctxray — Context Forensics</h1>
   <div class="sub">${esc(r.meta.source)}${r.meta.model ? ' · ' + esc(r.meta.model) : ''} · ${r.turns} turns · ${r.totals.toolCalls} tool calls${r.contextWindow ? ' · window ' + fmtTokens(r.contextWindow) : ''}</div>
-  ${pct != null ? `<p class="headline">上下文已用掉 ${pct}%（${fmtTokens(total)} / ${fmtTokens(r.contextWindow)}）</p>` : `<p class="headline">上下文占用 ${fmtTokens(total)} tokens</p>`}
+  ${pct != null ? `<p class="headline">${esc(t().headlineFull(pct, fmtTokens(total), fmtTokens(r.contextWindow)))}</p>` : `<p class="headline">${esc(t().headlineUsed(fmtTokens(total)))}</p>`}
   ${contextSvg(r)}
   <div class="section">
-    <h2>发现 ${r.findings.length} 个问题</h2>
-    ${findings.length ? findings.map(findingCard).join('') : '<p style="color:#57c47c">未发现问题。</p>'}
+    <h2>${esc(t().titleFindings(r.findings.length))}</h2>
+    ${findings.length ? findings.map(findingCard).join('') : `<p style="color:#57c47c">${esc(t().noFindings())}</p>`}
   </div>
   <div class="section">
-    <h2>指令存亡（${r.rules.length} 条：${live.length} 存活 / ${evicted.length} 被挤出）</h2>
+    <h2>${esc(t().titleRules(r.rules.length, live.length, evicted.length))}</h2>
     ${orderedRules.map(ruleRow).join('')}
   </div>
-  ${r.totals.estimatedTokens ? '<p class="note">注：token 数为估算值（该来源无逐轮 token 记录）。</p>' : ''}
+  ${r.totals.estimatedTokens ? `<p class="note">${esc(t().estimateNote())}</p>` : ''}
 </div>
 </body>
 </html>`;
