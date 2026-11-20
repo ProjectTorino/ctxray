@@ -1,5 +1,9 @@
 # ctxray · Context Forensics for AI coding agents
 
+[![CI](https://github.com/ProjectTorino/ctxray/actions/workflows/ci.yml/badge.svg)](https://github.com/ProjectTorino/ctxray/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/ctxray.svg)](https://www.npmjs.com/package/ctxray)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 > **Your agent didn't get dumber. Its context got evicted.**
 >
 > `ctxray` reads an agent's local session log and answers the *causal* question
