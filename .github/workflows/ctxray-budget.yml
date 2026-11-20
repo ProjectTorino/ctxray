@@ -1,0 +1,35 @@
+name: ctxray context budget gate
+
+# Fail a PR when any agent session on this run blows its context budget or
+# produces a critical finding (e.g. a tool output > 25% of the context window).
+#
+# Requires the ctxray package to be published (npx). Point BUDGET at your
+# model's context window, e.g. 60000 for a 64k model.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ctxray:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Context budget gate
+        env:
+          BUDGET: "60000"
+        run: |
+          set -euo pipefail
+          found=0
+          while IFS= read -r f; do
+            echo "::group::ctxray $f"
+            npx --yes ctxray "$f" --budget "$BUDGET"
+            echo "::endgroup::"
+            found=1
+          done < <(find . -type f \( -path '*/sessions/*/rollout-*.jsonl' \
+                   -o -name 'session.v4.jsonl' -o -name 'session.v4.jsonl.zstd' \) 2>/dev/null | sort)
+          if [ "$found" = "0" ]; then
+            echo "no agent session files found; skipping"
+          fi
