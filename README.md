@@ -44,6 +44,11 @@ ctxray — Context Forensics
 > and the agent violated it one turn later. ctxray connects the two with
 > evidence — no LLM, no API key, no cloud.
 
+The same report also renders as a single self-contained HTML file (offline,
+shareable, zero dependencies):
+
+<img src="assets/demo.png" alt="ctxray single-file HTML incident report" width="680" />
+
 ---
 
 ## Why this exists
