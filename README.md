@@ -25,15 +25,19 @@ ctxray — Context Forensics
   1. [WARN] 上下文在第 2 轮疑似被压缩
      输入 token 从 50000 骤降到 8000（下降 84%）。
   2. [WARN] 规则在第 2 轮之后被挤出上下文
+     帮我实现支付模块。
+  3. [WARN] 规则在第 2 轮之后被挤出上下文
      不要修改 migrations 目录。
-  3. [WARN] 规则被挤出后，agent 在第 2 轮执行了相关操作
+  4. [WARN] 规则被挤出后，agent 在第 2 轮执行了相关操作
      该操作引用了被挤出规则的主题（migrations）。请人工确认是否违反了规则。
      · turn 2 tool bash @ turn 2: edit migrations/001_init.sql
 
 指令存亡（4 条：2 存活 / 2 被挤出）
-  1. [user] ✗ 第 2 轮被挤出  不要修改 migrations 目录。
+  1. [user] ✗ 第 2 轮被挤出  帮我实现支付模块。
+  2. [user] ✗ 第 2 轮被挤出  不要修改 migrations 目录。
      ↳ 规则被挤出后，agent 在第 2 轮执行了相关操作
-  2. [sys ] ✓ 存活  Never commit secrets or API keys.
+  3. [sys ] ✓ 存活  Always use TypeScript for new code.
+  4. [sys ] ✓ 存活  Never commit secrets or API keys.
 ```
 
 > That's the whole product in one screenshot: a rule was evicted by compaction,
