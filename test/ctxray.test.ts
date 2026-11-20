@@ -4,6 +4,7 @@ import { parseFile, analyze } from '../src/index.ts';
 import { extractRules } from '../src/analyze/rules.ts';
 import { estimateTokens } from '../src/util/tokens.ts';
 import { demoReport, DEMO_JSONL } from '../src/demo.ts';
+import type { Trace, ToolCall } from '../src/types.ts';
 
 const FIXTURE = 'test/fixtures/rollout-compaction-demo.jsonl';
 
@@ -13,6 +14,28 @@ test('--demo stays in sync with the committed fixture', () => {
   assert.equal(fromDemo.findings.length, fromFile.findings.length);
   assert.equal(fromDemo.rules.length, fromFile.rules.length);
   assert.equal(fromDemo.turns, fromFile.turns);
+});
+
+test('a Windows path read twice yields exactly one duplicate-read finding', () => {
+  const read = (id: string, result: string): ToolCall => ({
+    turn: 1,
+    step: 1,
+    time: 0,
+    name: 'read',
+    arguments: JSON.stringify({ path: 'D:\\repo\\src\\a.ts' }),
+    callId: id,
+    resultText: result,
+  });
+  const trace: Trace = {
+    meta: { id: 't', cwd: '', source: 'codex', systemPrompt: 'Always use TypeScript.', origin: 'test' },
+    steps: [{ turn: 1, step: 1, time: 0, messages: [] }],
+    toolCalls: [read('c1', 'A'.repeat(300)), read('c2', 'B'.repeat(300))],
+    tokenUsage: [],
+    compactions: [],
+  };
+  const report = analyze(trace);
+  const dups = report.findings.filter((f) => f.kind === 'duplicate-read');
+  assert.equal(dups.length, 1, 'one path spelled two ways must not double-count');
 });
 
 test('parses a Codex rollout into a normalized trace', () => {
