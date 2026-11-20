@@ -38,6 +38,36 @@ test('a Windows path read twice yields exactly one duplicate-read finding', () =
   assert.equal(dups.length, 1, 'one path spelled two ways must not double-count');
 });
 
+test('goal_round harness text is not extracted as a user instruction', () => {
+  const trace: Trace = {
+    meta: { id: 't', cwd: '', source: 'dsh', systemPrompt: 'Always use TypeScript.', origin: 'test' },
+    steps: [
+      {
+        turn: 1,
+        step: 1,
+        time: 0,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: '<goal_round>\nObjective: "ship it"\nRound: 1/40\nContinue working toward the objective.\n</goal_round>',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    toolCalls: [],
+    tokenUsage: [],
+    compactions: [],
+  };
+  const report = analyze(trace);
+  const userRules = report.rules.filter((r) => r.source === 'user');
+  assert.equal(userRules.length, 0, 'harness goal_round text must not become a user rule');
+});
+
 test('parses a Codex rollout into a normalized trace', () => {
   const trace = parseFile(FIXTURE);
   assert.equal(trace.meta.source, 'codex');

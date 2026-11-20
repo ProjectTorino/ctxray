@@ -11,7 +11,7 @@ const JSON_KEY = /^"(?:type|description|properties|required|enum|default|name|pa
 // Harness-injected text that is NOT a user instruction and must not be
 // mistaken for one (system reminders, time notices, compressed-context headers).
 const USER_META =
-  /<system-reminder>|<acp\b|\[model changed|\[Compressed conversation section\]|Time sampled while preparing|The user changed the approval policy|TASK AS OF THIS BLOCK|Open objectives:|Fingerprints show|No compressible ranges/;
+  /<system-reminder>|<\/?goal_round\b|<acp\b|\[model changed|\[Compressed conversation section\]|Time sampled while preparing|The user changed the approval policy|TASK AS OF THIS BLOCK|Open objectives:|Fingerprints show|No compressible ranges|^Objective:\s|^Round:\s+\d+\/\d+|^Continue working toward/;
 
 const ACK =
   /^(?:ok|okay|yes|no|thanks|thank you|acknowledged|got it|sure|fine|好|好的|嗯|行|可以|继续|收到|明白|谢谢|知道了|了解|哦|对|是|嗯嗯)[.!！。～~]*$/i;
