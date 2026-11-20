@@ -83,6 +83,18 @@ and a waste ledger where every line carries its source.
 - **Three output shapes** — colored terminal report, single-file HTML, and
   `--json` for scripting.
 
+### How this differs from token counters
+
+| Tool category | What it answers | What ctxray adds |
+| --- | --- | --- |
+| Spend dashboards (`ccusage`, Langfuse, …) | *How much* did I spend? | *Why*: which rule got squeezed out, and what broke after |
+| Log viewers (`claude-code-log`, …) | *What* was on screen? | Causal link: evicted instruction → violating tool call, with line evidence |
+| Context profilers | *Where* did tokens go? | Instruction **survival over time** + duplicate-read waste in dollars |
+
+ctxray is local-first, agent-agnostic (Claude Code / Codex / DeepSeek Harness),
+needs no API key, and every claim in the report cites the turn and text it came
+from.
+
 ## Install
 
 ```bash
@@ -95,6 +107,9 @@ npx ctxray <session-file>
 # or install globally
 npm i -g ctxray
 ctxray <session-file>
+
+# not on npm yet? run straight from GitHub (npm builds it on install)
+npx github:ProjectTorino/ctxray --demo
 ```
 
 No API key. No network. Your logs never leave the machine.

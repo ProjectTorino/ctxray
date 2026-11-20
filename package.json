@@ -12,7 +12,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test",
-    "prepublishOnly": "node scripts/build.mjs"
+    "prepublishOnly": "node scripts/build.mjs",
+    "prepare": "npm run build"
   },
   "keywords": [
     "claude-code",
