@@ -3,8 +3,17 @@ import assert from 'node:assert/strict';
 import { parseFile, analyze } from '../src/index.ts';
 import { extractRules } from '../src/analyze/rules.ts';
 import { estimateTokens } from '../src/util/tokens.ts';
+import { demoReport, DEMO_JSONL } from '../src/demo.ts';
 
 const FIXTURE = 'test/fixtures/rollout-compaction-demo.jsonl';
+
+test('--demo stays in sync with the committed fixture', () => {
+  const fromFile = analyze(parseFile(FIXTURE));
+  const fromDemo = demoReport();
+  assert.equal(fromDemo.findings.length, fromFile.findings.length);
+  assert.equal(fromDemo.rules.length, fromFile.rules.length);
+  assert.equal(fromDemo.turns, fromFile.turns);
+});
 
 test('parses a Codex rollout into a normalized trace', () => {
   const trace = parseFile(FIXTURE);

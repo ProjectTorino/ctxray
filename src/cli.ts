@@ -1,4 +1,5 @@
 import { parseFile, analyze } from './index.ts';
+import { demoReport } from './demo.ts';
 import { renderTerminal } from './render/terminal.ts';
 import { renderHtml } from './render/html.ts';
 
@@ -6,9 +7,10 @@ const USAGE = `ctxray — context forensics for AI coding agents
 
 usage:
   ctxray <session-file>                  terminal report (auto-detects source)
+  ctxray --demo                          run a built-in demo session (no file needed)
   ctxray <session-file> --json           machine-readable JSON
   ctxray <session-file> --html [--out f] single-file HTML report
-  ctxray <session-file> --budget <tokens> CI gate: fail if context > budget
+  ctxray <session-file> --budget <tokens> CI gate: fail if peak context > budget
                                           or any critical finding (exit 1)
 
 flags:
@@ -22,6 +24,7 @@ sources: Claude Code / Codex / DeepSeek Harness session files
 
 interface Opts {
   path?: string;
+  demo: boolean;
   json: boolean;
   html: boolean;
   out?: string;
@@ -32,11 +35,12 @@ interface Opts {
 }
 
 function parseArgs(argv: string[]): Opts {
-  const o: Opts = { json: false, html: false, color: true, help: false, version: false };
+  const o: Opts = { demo: false, json: false, html: false, color: true, help: false, version: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--json') o.json = true;
     else if (a === '--html') o.html = true;
+    else if (a === '--demo') o.demo = true;
     else if (a === '--no-color') o.color = false;
     else if (a === '--out') o.out = argv[++i];
     else if (a === '--budget') o.budget = Number(argv[++i]);
@@ -58,13 +62,12 @@ async function main(): Promise<void> {
     process.stdout.write('ctxray 0.1.0\n');
     return;
   }
-  if (!o.path) {
+  if (!o.path && !o.demo) {
     process.stderr.write(USAGE);
     process.exit(2);
   }
 
-  const trace = await parseFile(o.path);
-  const report = analyze(trace);
+  const report = o.demo ? demoReport() : analyze(await parseFile(o.path!));
 
   // CI gate: context budget or critical findings. The budget compares the
   // PEAK per-turn context (a context window is re-sent each turn), not the

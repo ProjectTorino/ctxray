@@ -73,7 +73,10 @@ and a waste ledger where every line carries its source.
 ## Install
 
 ```bash
-# zero-install, reads sessions on this machine
+# try it right now — built-in demo session, no agent logs required
+npx ctxray --demo
+
+# or point it at a real session (zero install)
 npx ctxray <session-file>
 
 # or install globally
@@ -87,6 +90,7 @@ No API key. No network. Your logs never leave the machine.
 
 ```
 ctxray <session-file>                  terminal report (auto-detects source)
+ctxray --demo                          built-in demo session (no file needed)
 ctxray <session-file> --json           machine-readable JSON
 ctxray <session-file> --html [--out f] single-file HTML report
 ctxray <session-file> --budget <tokens>
